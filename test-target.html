@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Target - Exam Simulation</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: #f0f0f0;
+      }
+      .card {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      #status {
+        font-weight: bold;
+        margin-top: 1rem;
+        color: #d32f2f;
+      }
+      .log {
+        margin-top: 1rem;
+        max-height: 200px;
+        overflow-y: auto;
+        text-align: left;
+        background: #eee;
+        padding: 0.5rem;
+        width: 100%;
+        font-size: 0.8rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Simulated Exam Page</h1>
+      <p>This page detects when you switch tabs or lose focus.</p>
+      <div id="status">Status: Safe</div>
+      <div class="log" id="log"></div>
+    </div>
+
+    <script>
+      const statusDiv = document.getElementById("status");
+      const logDiv = document.getElementById("log");
+
+      function logEvent(msg) {
+        console.log(msg);
+        const entry = document.createElement("div");
+        entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+        logDiv.prepend(entry);
+      }
+
+      document.addEventListener("visibilitychange", () => {
+        logEvent(`Visibility changed to: ${document.visibilityState}`);
+        if (document.hidden) {
+          statusDiv.textContent = "Status: CHEATING DETECTED! (Hidden)";
+        } else {
+          statusDiv.textContent = "Status: Safe (Visible)";
+        }
+      });
+
+      window.addEventListener("blur", () => {
+        logEvent("Window lost focus (blur)");
+        statusDiv.textContent = "Status: CHEATING DETECTED! (Blur)";
+      });
+
+      window.addEventListener("focus", () => {
+        logEvent("Window gained focus (focus)");
+        statusDiv.textContent = "Status: Safe (Focus)";
+      });
+
+      window.onbeforeunload = () => {
+        logEvent("User attempting to leave page");
+        return "Are you sure you want to leave the exam?";
+      };
+    </script>
+  </body>
+</html>
