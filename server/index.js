@@ -3,10 +3,23 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const cors = require("cors");
 const https = require('https');
-const path = require("path");
+require("dotenv").config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const getPort = () => {
+    const rawPort = process.env.PORT;
+    if (!rawPort) return 5000;
+
+    const parsedPort = Number(rawPort);
+    if (Number.isInteger(parsedPort) && parsedPort > 0) {
+        return parsedPort;
+    }
+
+    console.warn(`Invalid PORT value "${rawPort}". Falling back to 5000.`);
+    return 5000;
+};
+
+const PORT = getPort();
 
 const httpsAgent = new https.Agent({
     rejectUnauthorized: false
